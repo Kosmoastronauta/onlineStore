@@ -6,14 +6,14 @@ const ProductSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        default: "others"
+    },
     price: Number,
     date: {
         type: Date,
         default: Date.now()
-    },
-    category: {
-        type: String,
-        default: "others"
     }
 });
 
