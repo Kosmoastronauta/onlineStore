@@ -15,6 +15,18 @@ router.get('/', async (req, res) => {
     }
 });
 /**
+ * Endpoint for getting specific product by its id.
+ * @see Product
+ */
+router.get('/:productId', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.productId);
+        res.json(product);
+    } catch (error) {
+        res.json({message: error});
+    }
+})
+/**
  * Endpoint for creating new product to the system.
  * @see Product
  */
@@ -32,4 +44,13 @@ router.post('/', async (req, res) => {
         res.json({message: error});
     }
 });
+
+router.delete('/:productId', async (req, res) => {
+    try {
+        const removedProduct = await Product.remove({_id: req.params.productId});
+        res.json(removedProduct);
+    } catch (error) {
+        res.json({message: error});
+    }
+})
 module.exports = router;

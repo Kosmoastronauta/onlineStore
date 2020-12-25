@@ -9,7 +9,7 @@ app.use(bodyparser.json()); // Enabling parsing json model
 
 // Importing routes
 const productRoutes = require('./routes/product');
-app.use('/product', productRoutes);
+app.use('/products', productRoutes);
 
 // DATABASE
 mongoose.connect(process.env.DB_CONNECTION_STRING, {
