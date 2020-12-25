@@ -1,23 +1,27 @@
 const express = require('express')
 const router = express.Router();
-const Post = require('../model/Product');
+const Product = require('../model/Product');
 
-router.get('/getAll', (req, res) => {
-    res.json({success: true});
+router.get('/', async (req, res) => {
+    try {
+        const products = await Product.find(); // get all products, there is  option "limit" after limit() ex. Product.find().limit(10)
+        res.json(products);
+    } catch (error) {
+        res.json({message: error});
+    }
 });
 
-router.post('/newProduct', ((req, res) => {
+router.post('/', async (req, res) => {
     // console.log(req.body);
-    const post = new Post({
+    const product = new Product({
         title: req.body.title,
         description: req.body.description
     });
-    post.save()
-        .then(data => {
-            res.status(200).json(data);
-        })
-        .catch(error => {
-            res.status(400).json({message: error});
-        })
-}));
+    try {
+        const savedProduct = await product.save();
+        res.json(savedProduct);
+    } catch (error) {
+        res.json({message: error});
+    }
+});
 module.exports = router;
