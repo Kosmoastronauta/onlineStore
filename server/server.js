@@ -1,21 +1,22 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const bodyparser = require('body-parser');
 require('dotenv/config');
-dotenv.config();
+
+app.use(bodyparser.json()); // Enabling parsing json model
 
 // Importing routes
 const productRoutes = require('./routes/product');
-app.use('/product',productRoutes);
+app.use('/product', productRoutes);
 
 // DATABASE
-// mongoose.connect(process.env.DB_CONNECTION_STRING, {
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true
-//     },
-//     () => console.log('Connected to DB!'))
+mongoose.connect(process.env.DB_CONNECTION_STRING, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    },
+    () => console.log('Connected to DB!'))
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
