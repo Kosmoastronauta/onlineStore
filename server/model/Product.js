@@ -8,7 +8,7 @@ const ProductSchema = mongoose.Schema({
     },
     category: {
         type: String,
-        default: "others"
+        default: 'others'
     },
     price: Number,
     date: {
