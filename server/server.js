@@ -39,7 +39,7 @@ app.use(express.urlencoded({extended: false}));
 
 /**
  * Setting port where server will be running.
- * @param process.env.PORT - it's taking PORT property from .env file.
+ * @param process.env.PORT - it takes PORT property from .env file.
  * @see .env file
  */
 app.listen(process.env.PORT, () => console.log('server is running'));
