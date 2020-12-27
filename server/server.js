@@ -7,17 +7,27 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
+const router = express.Router();
 require('dotenv/config');
 
 app.use(bodyparser.json()); // Enabling parsing json model
-
+// Importing routes/controllers.
 /**
- * Importing routes/controllers.
+ * Router for requests with /products prefix.
  * @type {Router}
  * @see Product
  */
 const productRoutes = require('./routes/product');
 app.use('/products', productRoutes);
+
+/**
+ * Router for requests with /view prefix.
+ * Loads views.
+ * @see views directory.
+ * @type {Router}
+ */
+const viewRoutes = require('./routes/view');
+app.use('/view', viewRoutes);
 
 // DATABASE
 /**
@@ -36,6 +46,9 @@ mongoose.connect(process.env.DB_CONNECTION_STRING, {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+
+router.get('/', ((req, res) => res.send('homePage')));
+module.exports = router;
 
 /**
  * Setting port where server will be running.
