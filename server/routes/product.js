@@ -43,7 +43,7 @@ router.get('/:productId', async (req, res) => {
  */
 router.post('/', async (req, res) => {
     const product = new Product({
-        title: req.body.title,
+        name: req.body.name,
         description: req.body.description,
         price: req.body.price,
         category: req.body.category
