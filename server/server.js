@@ -1,6 +1,5 @@
 /**
  * Main server file, here everything starts.
- * @type {e | (() => Express)}
  */
 const express = require('express');
 const app = express();
@@ -8,9 +7,15 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const router = express.Router();
+const path = require('path');
 require('dotenv/config');
 
 app.use(bodyparser.json()); // Enabling parsing json model
+app.use(express.static(path.join(__dirname, '/public')));
+app.set('view engine', 'ejs');
+// app.set("views", path.join(__dirname, "views"));
+
+// app.get('/', ((req, res) => res.render('homePage')));
 // Importing routes/controllers.
 /**
  * Router for requests with /products prefix.
@@ -27,7 +32,10 @@ app.use('/products', productRoutes);
  * @type {Router}
  */
 const viewRoutes = require('./routes/view');
-app.use('/view', viewRoutes);
+app.use('/views', viewRoutes);
+
+const userRoutes = require('./routes/users');
+app.use('/users', userRoutes);
 
 // DATABASE
 /**
