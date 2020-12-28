@@ -8,10 +8,12 @@ const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const router = express.Router();
 const path = require('path');
+const expressLayouts = require('express-ejs-layouts');
 require('dotenv/config');
 
 app.use(bodyparser.json()); // Enabling parsing json model
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressLayouts);
 app.set('view engine', 'ejs');
 // app.set("views", path.join(__dirname, "views"));
 
@@ -32,7 +34,7 @@ app.use('/products', productRoutes);
  * @type {Router}
  */
 const viewRoutes = require('./routes/view');
-app.use('/views', viewRoutes);
+app.use(viewRoutes);
 
 const userRoutes = require('./routes/users');
 app.use('/users', userRoutes);
@@ -55,7 +57,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-router.get('/', ((req, res) => res.send('homePage')));
 module.exports = router;
 
 /**
