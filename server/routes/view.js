@@ -1,5 +1,5 @@
 /**
- * Controller for all endpoints which starts with /view prefix
+ * Controller for loading
  */
 const express = require('express')
 const router = express.Router();
