@@ -1,6 +1,5 @@
 /**
  * Controller for all endpoints which starts with /products prefix
- * @type {e | (() => Express)}
  */
 const express = require('express')
 const router = express.Router();

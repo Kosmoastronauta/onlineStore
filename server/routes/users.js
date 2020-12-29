@@ -4,8 +4,9 @@
 const express = require('express')
 const router = express.Router();
 const bodyParser = require('body-parser');
-
+const User = require('../model/User');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
+const bcrypt = require('bcryptjs');
 
 /**
  * Endpoint responsible for returning page for signing in.
@@ -43,10 +44,31 @@ router.post('/login', urlencodedParser, (req, res) => {
  * POST at: /register
  * @see ./views/login.ejs
  */
-router.post('/register', urlencodedParser, (req, res) => {
-    console.log(req.body.name);
-    console.log(req.body.email);
-    console.log(req.body.password);
-    console.log(req.body.password2);
+router.post('/register', urlencodedParser, async (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const password2 = req.body.password2;
+
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    })
+    console.log(user);
+    bcrypt.genSalt(13, ((error, s) => {
+        bcrypt.hash(user.password, s, async (err, hash) => {
+            if (err)
+                throw err;
+            user.password = hash;
+            try {
+                const savedUser = await user.save();
+                console.log(user.password);
+                res.redirect('/users/login')
+            }catch (error){
+
+            }
+        })
+    }))
 })
 module.exports = router;
