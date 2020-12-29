@@ -9,15 +9,27 @@ const bodyparser = require('body-parser');
 const router = express.Router();
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
+const passport = require('passport');
+const session = require('express-session');
 require('dotenv/config');
 
 app.use(bodyparser.json()); // Enabling parsing json model
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
-// app.set("views", path.join(__dirname, "views"));
 
-// app.get('/', ((req, res) => res.render('homePage')));
+require('./config/passport')(passport);
+
+app.use(
+    session({
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 // Importing routes/controllers.
 /**
  * Router for requests with /products prefix.

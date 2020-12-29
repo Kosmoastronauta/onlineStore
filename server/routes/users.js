@@ -64,9 +64,9 @@ router.post('/register', urlencodedParser, async (req, res) => {
             try {
                 const savedUser = await user.save();
                 console.log(user.password);
-                res.redirect('/users/login')
+                res.redirect('/users/login');
             }catch (error){
-
+                res.json({message: err}).status(400);
             }
         })
     }))
