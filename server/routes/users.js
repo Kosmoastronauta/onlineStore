@@ -32,7 +32,7 @@ router.get('/register', (req, res) =>
  * @see ./views/login.ejs
  */
 router.post('/login', urlencodedParser, (req, res) => {
-    console.log(req.body.email);
+    console.log(req.body.username);
     console.log(req.body.password);
 })
 
