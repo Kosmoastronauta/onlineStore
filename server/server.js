@@ -15,7 +15,6 @@ app.use(bodyparser.json()); // Enabling parsing json model
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
-// app.set("views", path.join(__dirname, "views"));
 
 // app.get('/', ((req, res) => res.render('homePage')));
 // Importing routes/controllers.
