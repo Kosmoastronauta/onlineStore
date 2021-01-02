@@ -11,9 +11,11 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const passport = require('passport');
 const session = require('express-session');
+const flash = require('connect-flash');
 require('dotenv/config');
 
 app.use(bodyparser.json()); // Enabling parsing json model
+app.use(bodyparser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
@@ -30,6 +32,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 // Importing routes/controllers.
 /**
  * Router for requests with /products prefix.

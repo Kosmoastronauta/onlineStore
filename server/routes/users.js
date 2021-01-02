@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const User = require('../model/User');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const bcrypt = require('bcryptjs');
+const passport = require('passport')
 
 /**
  * Endpoint responsible for returning page for signing in.
@@ -32,9 +33,12 @@ router.get('/register', (req, res) =>
  * POST at: /login
  * @see ./views/login.ejs
  */
-router.post('/login', urlencodedParser, (req, res) => {
-    console.log(req.body.username);
-    console.log(req.body.password);
+router.post('/login', urlencodedParser, (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/dashboard',
+        failuerRedirect: '/login',
+        failureFlash: true
+    })(req, res, next);
 })
 
 /**
@@ -45,13 +49,13 @@ router.post('/login', urlencodedParser, (req, res) => {
  * @see ./views/login.ejs
  */
 router.post('/register', urlencodedParser, async (req, res) => {
-    const name = req.body.name;
+    const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
     const password2 = req.body.password2;
 
     const user = new User({
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password
     })
@@ -62,10 +66,10 @@ router.post('/register', urlencodedParser, async (req, res) => {
                 throw err;
             user.password = hash;
             try {
-                const savedUser = await user.save();
+                const savedUser = user.save();
                 console.log(user.password);
                 res.redirect('/users/login');
-            }catch (error){
+            } catch (error) {
                 res.json({message: err}).status(400);
             }
         })
