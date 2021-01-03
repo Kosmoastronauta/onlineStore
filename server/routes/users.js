@@ -48,12 +48,7 @@ router.post('/login', urlencodedParser, (req, res, next) => {
  * POST at: /register
  * @see ./views/login.ejs
  */
-router.post('/register', urlencodedParser, async (req, res) => {
-    const username = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
-    const password2 = req.body.password2;
-
+router.post('/register', urlencodedParser, (req, res) => {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
@@ -63,21 +58,7 @@ router.post('/register', urlencodedParser, async (req, res) => {
     var errors = getValidationErrors(user);
 
     if (errors.length == 0) {
-        console.log(user);
-        bcrypt.genSalt(13, ((error, s) => {
-        bcrypt.hash(user.password, s, async (err, hash) => {
-            if (err)
-                throw err;
-            user.password = hash;
-            try {
-                const savedUser = user.save();
-                console.log(user.password);
-                res.redirect('/users/login');
-            } catch (error) {
-                res.json({message: err}).status(400);
-                }
-            })
-        }))
+       saveUser(user, res);
     }
     else 
         console.log(errors);
@@ -89,12 +70,13 @@ function getValidationErrors(user) {
     if (user.username == '' || user.email == '')
         errors.push("Empty username or adress.");
 
-    User.findOne({
+    var userFromDB = User.findOne({
         username: user.username
-    }).then(user => {
-        if (user) {
-            errors.push("Username already exists.")
-        }});
+    }).then(existingUser => {
+         return existingUser});
+
+    if (userFromDB != null)
+        errors.push("Username already exists.");
     
     if (!validateEmail(user.email)) 
         errors.push("Incorrect email.");
@@ -102,7 +84,7 @@ function getValidationErrors(user) {
     if (user.password.length < 5)
         errors.push("Password is too short.");
 
-    if (user.password != user.password2)
+    if (!user.password.localeCompare(user.password2))
         errors.push("Passwords do not match.");
         
     return errors;
@@ -111,6 +93,23 @@ function getValidationErrors(user) {
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
-  }
+}
+
+function saveUser(user, res) {
+    bcrypt.genSalt(13, ((error, s) => {
+        bcrypt.hash(user.password, s, async (err, hash) => {
+            if (err)
+                throw err;
+            user.password = hash;
+            try {
+                user.save();
+                console.log(user.password);
+                res.redirect('/users/login');
+            } catch (error) {
+                res.json({message: err}).status(400);
+            }
+        })
+    }))
+}
 
 module.exports = router;
