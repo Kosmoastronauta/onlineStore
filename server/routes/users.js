@@ -58,9 +58,13 @@ router.post('/register', urlencodedParser, async (req, res) => {
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
-    })
-    console.log(user);
-    bcrypt.genSalt(13, ((error, s) => {
+    });
+
+    var errors = getValidationErrors(user);
+
+    if (errors.length == 0) {
+        console.log(user);
+        bcrypt.genSalt(13, ((error, s) => {
         bcrypt.hash(user.password, s, async (err, hash) => {
             if (err)
                 throw err;
@@ -71,8 +75,42 @@ router.post('/register', urlencodedParser, async (req, res) => {
                 res.redirect('/users/login');
             } catch (error) {
                 res.json({message: err}).status(400);
-            }
-        })
-    }))
-})
+                }
+            })
+        }))
+    }
+    else 
+        console.log(errors);
+});
+
+function getValidationErrors(user) {
+    var errors = [];
+
+    if (user.username == '' || user.email == '')
+        errors.push("Empty username or adress.");
+
+    User.findOne({
+        username: user.username
+    }).then(user => {
+        if (user) {
+            errors.push("Username already exists.")
+        }});
+    
+    if (!validateEmail(user.email)) 
+        errors.push("Incorrect email.");
+    
+    if (user.password.length < 5)
+        errors.push("Password is too short.");
+
+    if (user.password != user.password2)
+        errors.push("Passwords do not match.");
+        
+    return errors;
+}
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+
 module.exports = router;
