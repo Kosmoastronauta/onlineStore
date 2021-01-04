@@ -36,7 +36,7 @@ router.get('/register', (req, res) =>
 router.post('/login', urlencodedParser, (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/dashboard',
-        failuerRedirect: '/login',
+        failureRedirect: '/users/login',
         failureFlash: true
     })(req, res, next);
 })
@@ -57,17 +57,22 @@ router.post('/register', urlencodedParser, (req, res) => {
 
     var errors = getValidationErrors(user);
 
-    if (errors.length == 0) {
+    if (errors.length === 0) {
        saveUser(user, res);
     }
     else 
         console.log(errors);
 });
 
+router.get('/logout',(req, res) => {
+    req.logout();
+    req.flash('success_msg', "Logged out");
+})
+
 function getValidationErrors(user) {
     var errors = [];
 
-    if (user.username == '' || user.email == '')
+    if (user.username === '' || user.email === '')
         errors.push("Empty username or adress.");
 
     var userFromDB = User.findOne({

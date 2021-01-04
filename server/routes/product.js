@@ -4,22 +4,28 @@
 const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
+const passport = require('passport');
+const {ensureAuthenticated} = require('../config/auth');
 
 /**
  * Endpoint responsible for getting all products in the system.
  * GET at: /products
  * @see Product
  */
-router.get('/', async (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res, next) => {
+    let products;
     try {
-        const products = await Product.find(); // get all products, there is  option "limit" after limit() ex. Product.find().limit(10)
-        if (products == null)
-            res.json().status(204);
-        else
-            res.json(products).status(200);
+        products = await Product.find(); // get all products, there is  option "limit" after limit() ex. Product.find().limit(10)
+        // if (products == null)
+            // res.json().status(204);
+        // else
+            // res.json(products).status(200);
     } catch (error) {
-        res.json({message: error}).status(400);
+        products=[];
+        // res.json({message: error}).status(400);
     }
+    res.render('products', { products})
+
 });
 /**
  * Endpoint responsible for getting specific product by its id.
