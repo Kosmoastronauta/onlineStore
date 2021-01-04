@@ -36,7 +36,7 @@ router.get('/register', (req, res) =>
 router.post('/login', urlencodedParser, (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/dashboard',
-        failuerRedirect: '/login',
+        failureRedirect: '/users/login',
         failureFlash: true
     })(req, res, next);
 })
@@ -55,22 +55,27 @@ router.post('/register', urlencodedParser, (req, res) => {
         password: req.body.password
     });
 
-    var errors = getValidationErrors(user);
+    let errors = getValidationErrors(user);
 
-    if (errors.length == 0) {
+    if (errors.length === 0) {
        saveUser(user, res);
     }
     else 
         console.log(errors);
 });
 
-function getValidationErrors(user) {
-    var errors = [];
+router.get('/logout',(req, res) => {
+    req.logout();
+    req.flash('success_msg', "Logged out");
+})
 
-    if (user.username == '' || user.email == '')
+function getValidationErrors(user) {
+    let errors = [];
+
+    if (user.username === '' || user.email === '')
         errors.push("Empty username or adress.");
 
-    var userFromDB = User.findOne({
+    let userFromDB = User.findOne({
         username: user.username
     }).then(existingUser => {
          return existingUser});
