@@ -66,7 +66,9 @@ router.post('/register', urlencodedParser, (req, res) => {
 
 router.get('/logout',(req, res) => {
     req.logout();
-    res.render('login');
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    req.session.destroy();
+    res.redirect('/users/login');
     // req.flash('success_msg', "Logged out");
 })
 
