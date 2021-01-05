@@ -11,14 +11,14 @@ const {ensureAuthenticated} = require('../config/auth');
  * GET at: /products
  * @see Product
  */
-router.get('/', ensureAuthenticated, async (req, res, next) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
     let products;
     try {
         products = await Product.find(); // get all products, there is  option "limit" after limit() ex. Product.find().limit(10)
     } catch (error) {
-        products=[];
+        products = [];
     }
-    res.render('products',{products});
+    res.render('products', {products});
 });
 /**
  * Endpoint responsible for getting specific product by its id.
@@ -26,7 +26,7 @@ router.get('/', ensureAuthenticated, async (req, res, next) => {
  * @param productId - id of the product that should be returned.
  * @see Product
  */
-router.get('/:productId', async (req, res) => {
+router.get('/:productId', ensureAuthenticated, async (req, res) => {
     try {
         const product = await Product.findById(req.params.productId);
         res.json(product).status(200);
@@ -39,7 +39,7 @@ router.get('/:productId', async (req, res) => {
  * POST at: /products
  * @see Product
  */
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
     const product = new Product({
         name: req.body.name,
         description: req.body.description,
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
  * @param productId - id of the product that should be deleted.
  * @see Product
  */
-router.delete('/:productId', async (req, res) => {
+router.delete('/:productId', ensureAuthenticated, async (req, res) => {
     try {
         const removedProduct = await Product.deleteOne({_id: req.params.productId});
         res.json(removedProduct).status(202);
@@ -74,7 +74,7 @@ router.delete('/:productId', async (req, res) => {
  * @param body - product sent in the body of http request which data will override product with productId in the system.
  * @see Product
  */
-router.patch('/:productId', async (req, res) => {
+router.patch('/:productId', ensureAuthenticated, async (req, res) => {
     try {
         const updatedProduct = await Product.updateOne({_id: req.params.productId},
             {
