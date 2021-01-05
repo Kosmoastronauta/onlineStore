@@ -66,7 +66,8 @@ router.post('/register', urlencodedParser, (req, res) => {
 
 router.get('/logout',(req, res) => {
     req.logout();
-    req.flash('success_msg', "Logged out");
+    res.render('login');
+    // req.flash('success_msg', "Logged out");
 })
 
 function getValidationErrors(user) {

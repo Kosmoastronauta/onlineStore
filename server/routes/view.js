@@ -22,4 +22,5 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 router.get('/addProduct', ensureAuthenticated, async (req, res) =>
     res.render('addProduct'));
 
+router.get('/contact',ensureAuthenticated,async (req,res)=> res.render('contact'))
 module.exports = router;
