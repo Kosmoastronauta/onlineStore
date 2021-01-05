@@ -1,0 +1,46 @@
+<div class="container">
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Add New Product</h3>
+        </div>
+        <div class="panel-body">
+            <form class="box" action="/products" method="POST">
+                <div class="form-group row green-border-focus">
+                    <label for="name" class="col-sm-2 col-form-label">Product Name:</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="name" placeholder="Name">
+                    </div>
+                </div>
+                <div class="form-group row green-border-focus">
+                    <label for="category" class="col-sm-2 col-form-label">Category:</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name="category" placeholder="Category">
+                    </div>
+                </div>
+
+                <div class="form-group row green-border-focus">
+                    <label for="price" class="col-sm-2 col-form-label">Price:</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" name="price" placeholder="Price">
+                    </div>
+                </div>
+
+                <div class="form-group green-border-focus">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea5" name="description" rows="3"
+                              placeholder="..."></textarea>
+                </div>
+                <fieldset class="form-group">
+
+                </fieldset>
+                <div class="form-group row">
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
