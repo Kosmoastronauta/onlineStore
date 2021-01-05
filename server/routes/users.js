@@ -59,6 +59,7 @@ router.post('/register', urlencodedParser, (req, res) => {
 
     if (errors.length === 0) {
        saveUser(user, res);
+       res.redirect('/users/login');
     }
     else 
         console.log(errors);
