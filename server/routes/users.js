@@ -48,23 +48,22 @@ router.post('/login', urlencodedParser, (req, res, next) => {
  * POST at: /register
  * @see ./views/login.ejs
  */
-router.post('/register', urlencodedParser, (req, res) => {
+router.post('/register', urlencodedParser, async (req, res) => {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
     });
 
-    let errors = getValidationErrors(user);
+    let errors = await getValidationErrors(user);
 
     if (errors.length === 0) {
-       saveUser(user, res);
-    }
-    else 
+        saveUser(user, res);
+    } else
         console.log(errors);
 });
 
-router.get('/logout',(req, res) => {
+router.get('/logout', (req, res) => {
     req.logout();
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     req.session.destroy();
@@ -72,29 +71,30 @@ router.get('/logout',(req, res) => {
     // req.flash('success_msg', "Logged out");
 })
 
-function getValidationErrors(user) {
+async function getValidationErrors(user) {
     let errors = [];
 
     if (user.username === '' || user.email === '')
         errors.push("Empty username or adress.");
 
-    let userFromDB = User.findOne({
+    let userFromDB = await User.findOne({
         username: user.username
     }).then(existingUser => {
-         return existingUser});
+        return existingUser
+    });
 
     if (userFromDB != null)
         errors.push("Username already exists.");
-    
-    if (!validateEmail(user.email)) 
+
+    if (!validateEmail(user.email))
         errors.push("Incorrect email.");
-    
+
     if (user.password.length < 5)
         errors.push("Password is too short.");
 
     if (!user.password.localeCompare(user.password2))
         errors.push("Passwords do not match.");
-        
+
     return errors;
 }
 
