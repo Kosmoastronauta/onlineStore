@@ -1,19 +1,22 @@
-<div class="row mt-5">
-    <div class="col-md-7 m-auto">
-        <div class="card card-body">
-<form class="form-group" action="/login" method="post">
-    <h3 class="form-signin-heading fab fa-2x" >Welcome in Online Store</h3>
-    <br>
-    <h2 class="form-signin-heading fab fa-2x " >Sign in</h2>
-    <br>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <label for="email"></label><input type="email" id="email" name="email" class="form-control" placeholder="Email address" required="">
-    <label for="inputPassword" class="sr-only">Password</label>
-    <label for="password"></label><input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
-    <a href="/users/login" class="btn btn-secondary btn-block">Login</a>
-    <br>
-    <p>Don't have an account? <a href="/users/register" class="btn btn-primary btn-block mb-2">Register</a>
-</form>
+<html>
+<head>
+    <link href="/css/loginstyle.css" rel="stylesheet" >
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <form action="/users/login" method="POST" class = "box">
+                    <h1>Welcome to New Shop</h1>
+                    <p class="text-muted"> Please pick one option</p>
+                    <input type="submit" name="" value="Log in" href="/users/login">
+                    <input type="submit" name="" value="Register" href="/users/register">
+                </form>
+            </div>
         </div>
     </div>
 </div>
+</body>
+</html>
