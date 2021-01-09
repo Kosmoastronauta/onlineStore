@@ -6,8 +6,15 @@ const router = express.Router();
 const Product = require('../model/Product');
 const {ensureAuthenticated} = require('../config/auth');
 
-router.get('/', (req, res) =>
-    res.render('homePage'));
+router.get('/',  async (req, res) => {
+    let products;
+    try {
+        products = await Product.find();
+    } catch (error) {
+        products = [];
+    }
+    res.render('homePage', {products});
+    });
 
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
     let products;
