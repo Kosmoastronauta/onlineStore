@@ -4,6 +4,7 @@
 const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
+const User = require('../model/User')
 const {ensureAuthenticated} = require('../config/auth');
 
 router.get('/',  async (req, res) => {
@@ -24,6 +25,19 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
         products = [];
     }
     res.render('dashboard', {products});
+});
+
+router.get('/adminDashboard', ensureAuthenticated, async (req, res) => {
+    let products;
+    let users;
+    try {
+        products = await Product.find();
+        users = await User.find();
+    } catch (error) {
+        products = [];
+        users = [];
+    }
+    res.render('adminDashboard', {products});
 });
 
 router.get('/addProduct', ensureAuthenticated, async (req, res) =>

@@ -8,6 +8,7 @@ const User = require('../model/User');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
+const {ensureAuthenticated} = require('../config/auth');
 
 /**
  * Endpoint responsible for returning page for signing in.
@@ -121,4 +122,57 @@ function saveUser(user, res) {
     }))
 }
 
+/**
+ * Endpoint responsible for getting all users in the system.
+ * GET at: /getUsers
+ * @see User
+ */
+router.get('/getUsers', ensureAuthenticated, async (req, res) => {
+    let users;
+    try {
+        users = await User.find(); // get all users, there is  option "limit" after limit() ex. User.find().limit(10)
+    } catch (error) {
+        users = [];
+    }
+    res.render('listOfUsers', {users});
+});
+
+/**
+ * Endpoint responsible for creating new user to the system.
+ * POST at: /adduser
+ * @see User
+ */
+router.post('/', ensureAuthenticated, async (req, res) => {
+    const user = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    });
+    try {
+        const savedUser = await user.save();
+        res.json(savedUser).status(201);
+    } catch (error) {
+        res.json({message: error}).status(400);
+    }
+});
+
+/**
+ * Endpoint responsible for deleting user by id.
+ * DELETE at: /users/{userId}
+ * @param userId - id of the product that should be deleted.
+ * @see User
+ */
+router.delete('/:userId', ensureAuthenticated, async (req, res) => {
+    try {
+        const removedUser = await User.deleteOne({_id: req.params.userId});
+        res.json(removedUser).status(202);
+    } catch (error) {
+        res.json({message: error}).status(400);
+    }
+});
+
+
+
 module.exports = router;
+
+
