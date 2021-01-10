@@ -32,8 +32,14 @@ router.get('/allProducts', ensureAuthenticated, async (req, res) => {
     res.render('products', {products});
 })
 
-router.get('/buyProduct',  async (req, res) => {
-    res.render('buyProduct');
+router.get('/buyProduct/:productId',  async (req, res) => {
+    let product;
+    try {
+        product = await Product.findById(req.params.productId);
+    } catch (error) {
+        res.json({message: error}).status(400);
+    }
+    res.render('buyProduct', {product});
 })
     
 router.get('/contact',ensureAuthenticated,async (req,res)=> res.render('contact'))
