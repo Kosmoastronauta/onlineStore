@@ -135,7 +135,7 @@ router.get('/getUsers', ensureAuthenticated, async (req, res) => {
     } catch (error) {
         users = [];
     }
-    res.render('listOfUsers', {users});
+    res.render('listOfUsers2', {users});
 });
 
 /**
@@ -164,12 +164,35 @@ router.post('/', ensureAuthenticated, async (req, res) => {
  * @see User
  */
 router.delete('/:userId', ensureAuthenticated, async (req, res) => {
+    console.log(req.params.userId);
     try {
         const removedUser = await User.deleteOne({_id: req.params.userId});
-        res.json(removedUser).status(202);
+
     } catch (error) {
-        res.json({message: error}).status(400);
+        console.log(error);
     }
+    let users;
+    try {
+        users = await User.find(); // get all users, there is  option "limit" after limit() ex. User.find().limit(10)
+    } catch (error) {
+        users = [];
+    }
+    res.render('listOfUsers2', {users});
+});
+
+/**
+ * Endpoint responsible for getting all users in the system.
+ * GET at: /listOfUsers2
+ * @see User
+ */
+router.get('/userDetails/:userId', ensureAuthenticated, async (req, res) => {
+    let user;
+    try {
+        user = await User.findOne({_id: req.params.userId}); // get specific users, there is  option "limit" after limit() ex. User.find().limit(10)
+    } catch (error) {
+        user = [];
+    }
+    res.render('userDetails', {user});
 });
 
 module.exports = router;

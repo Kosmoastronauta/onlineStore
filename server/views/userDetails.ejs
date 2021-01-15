@@ -1,0 +1,38 @@
+<head>
+    <link href="/css/button.css" rel="stylesheet" >
+    <script src = "/js/userService.js"></script>
+</head>
+
+<form>
+    <div class="form-group row">
+        <label for="description" style="font-family: Times New Roman, Times, serif !important; font-size: 30px !important; color:seagreen;">Name:</label>
+        <div class="col-sm-10">
+            <label for="text" style="font-family: Times New Roman, Times, serif !important; font-size: 70px !important;"><%=user.username%></label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="description" style="font-family: Times New Roman, Times, serif !important; font-size: 30px !important; color:seagreen;">Email:</label>
+        <div class="col-sm-10">
+            <label for="text" style="font-family: Times New Roman, Times, serif !important; font-size: 30px !important; " ><%=user.email%></label>
+        </div>
+    </div>
+
+    <button id = "deleteButton" type="submit" name="" value="Delete" onclick="deleteUser()"></button>
+    <script>
+        function deleteUser() {
+            let idInJs = '<%-user.id%>'
+            console.log('Zaczynamy')
+            const Http = new XMLHttpRequest()
+            const url='http://localhost:5000/users/'.concat(idInJs);
+            console.log(idInJs)
+            console.log(url)
+            Http.open("DELETE", url);
+            Http.send();
+            Http.onreadystatechange = (e) => {
+                console.log(Http.responseText)
+            }
+            window.location.href = 'http://localhost:5000/users/getUsers'
+        }
+    </script>
+
+</form>

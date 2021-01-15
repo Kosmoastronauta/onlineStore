@@ -1,0 +1,18 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+    </tr>
+    </thead>
+
+    <thead class="thead-light">
+    <% for (var i = 0; i < users.length; i++) { %>
+        <tr>
+            <td><%= users[i].username %></td>
+            <td><%= users[i].email %></td>
+            <td><a href="/users/userDetails/<%=users[i].id%>"><button>EDIT</button></a></td>
+        </tr>
+    <% } %>
+    </thead>
+</table>
