@@ -22,16 +22,6 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 router.get('/addProduct', ensureAuthenticated, async (req, res) =>
     res.render('addProduct'));
 
-router.get('/allProducts', ensureAuthenticated, async (req, res) => {
-    let products;
-    try {
-        products = await Product.find();
-    } catch (error) {
-        products = [];
-    }
-    res.render('products', {products});
-})
-
 router.get('/buyProduct/:productId',  async (req, res) => {
     let product;
     try {
