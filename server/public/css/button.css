@@ -83,6 +83,7 @@ pre .val {color: #e6db74;} /* value */
 	margin: 9px;
 }
 .btn-gradient {
+	background-color: greenyellow;
 	margin: 5px;
 }
 a[class*="btn"] {text-decoration: none;}
