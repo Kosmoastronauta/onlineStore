@@ -19,8 +19,7 @@
                                 <div class="ml-2">
                                     <h4 class="mb-0"><%= products[i].name %></h4>
                                     <div class="d-flex flex-row mt-1 text-black-50 date-time">
-                                        <div><i class="fa fa-calendar-o"></i><span class="ml-2"><%= products[i].description %></span></div>
-                                        <div class="ml-3"><i class="fa fa-clock-o"></i><span class="ml-2"><%= products[i].price %></span></div>
+                                        <div class="ml-3"><i class="fa fa-clock-o"></i><span class="ml-2"><%= products[i].price%>$</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -28,7 +27,7 @@
                             </div>
                             <div class="d-flex flex-row align-items-center">
                                 <div class="d-flex flex-column mr-2">
-                                    <a href="/buyProduct/<%=products[i].id%>" class="btn-gradient">VIEW</a>
+                                    <a href="/buyProduct/<%=products[i].id%>" class="btn-gradient">Details</a>
                                 </div>
                                 <div>
                                     <button type="button" class="shopping-cart-button float-right" data-toggle="shopping-cart-dropdown">
