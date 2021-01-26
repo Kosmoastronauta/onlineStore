@@ -22,7 +22,7 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
 router.get('/addProduct', ensureAuthenticated, async (req, res) =>
     res.render('addProduct'));
 
-router.get('/buyProduct/:productId',  async (req, res) => {
+router.get('/buyProduct/:productId', async (req, res) => {
     let product;
     try {
         product = await Product.findById(req.params.productId);
@@ -32,7 +32,7 @@ router.get('/buyProduct/:productId',  async (req, res) => {
     res.render('buyProduct', {product});
 })
 
-router.get('/boughtProduct/:productId',  async (req, res) => {
+router.get('/boughtProduct/:productId', async (req, res) => {
     let product;
     try {
         product = await Product.findById(req.params.productId);
@@ -40,7 +40,23 @@ router.get('/boughtProduct/:productId',  async (req, res) => {
         res.json({message: error}).status(400);
     }
     console.log("You bought ", product.name, "!");
+});
+
+
+router.get('/findProduct', async (req, res) => {
+    console.log("HAHAHAH");
+    productName = req.query.productName;
+    let products = [];
+    try {
+        if (productName === '' || productName == null)
+            products = await Product.find();
+        else
+            products=await Product.find({name: productName});
+            } catch (error) {
+        console.log("There was problem during getting product by name");
+    }
+    res.render('findProduct', {products});
 })
-    
-router.get('/contact',ensureAuthenticated,async (req,res)=> res.render('contact'))
+
+router.get('/contact', ensureAuthenticated, async (req, res) => res.render('contact'))
 module.exports = router;

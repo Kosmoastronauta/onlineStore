@@ -91,6 +91,6 @@ router.patch('/:productId', ensureAuthenticated, async (req, res) => {
     } catch (error) {
         res.json({message: error}).status(404);
     }
-})
+});
 
 module.exports = router;
