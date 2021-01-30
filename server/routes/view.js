@@ -63,12 +63,19 @@ router.get('/contact', ensureAuthenticated, async (req, res) => res.render('cont
 
 router.get('/add-to-cart/:productId', ensureAuthenticated, async (req, res) => {
     try {
-        console.log(req.params.productId);
+
+        console.log("SESSION: ",req.session);
         const addedProduct = await Product.findById(req.params.productId);
-        Cart.save(addedProduct);
-        console.log(Cart.getCart());
+        cart = new Cart(req.session.cart ? req.session.cart : {});
+        cart.addProduct(addedProduct);
+        req.session.cart=cart;
+        console.log("Total price before: ", req.session);
+        req.session.save(()=>{
+            console.log("saved");
+        })
+        // console.log(req.session.cart.totalPrice);
     } catch (error) {
-        console.log("error");
+        console.log(error);
     }
 })
 module.exports = router;

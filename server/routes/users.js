@@ -8,6 +8,7 @@ const User = require('../model/User');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
+const Cart = require('../model/Cart');
 
 /**
  * Endpoint responsible for returning page for signing in.
@@ -68,6 +69,7 @@ router.get('/logout', (req, res) => {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     req.session.destroy();
     res.redirect('/users/login');
+    Cart.clearCart();
     // req.flash('success_msg', "Logged out");
 })
 
