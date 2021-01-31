@@ -55,27 +55,46 @@ router.get('/findProduct', async (req, res) => {
     } catch (error) {
         console.log("There was problem during getting product by name");
     }
-    cart = [];
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
     res.render('findProduct', {products: products, cart: cart});
 })
 
 router.get('/contact', ensureAuthenticated, async (req, res) => res.render('contact'))
 
 router.get('/add-to-cart/:productId', ensureAuthenticated, async (req, res) => {
+    let cart;
     try {
-
-        console.log("SESSION: ",req.session);
+        console.log("SESSION: ", req.session);
         const addedProduct = await Product.findById(req.params.productId);
         cart = new Cart(req.session.cart ? req.session.cart : {});
         cart.addProduct(addedProduct);
-        req.session.cart=cart;
+        req.session.cart = cart;
         console.log("Total price before: ", req.session);
-        req.session.save(()=>{
+        req.session.save(() => {
             console.log("saved");
         })
-        // console.log(req.session.cart.totalPrice);
     } catch (error) {
         console.log(error);
     }
 })
+
+router.get('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
+    res.render('buyWithCart', {cart: req.session.cart});
+})
+
+router.post('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
+    let cart = req.session.cart;
+    cart.products.forEach(product => removeProductById(product._id));
+});
+
+async function removeProductById(id) {
+    console.log(id);
+    try {
+        await Product.deleteOne({_id: id});
+        console.log("removed product with id: " + id);
+    } catch (error) {
+        console.log("Could not remove product with id: "+id);
+    }
+}
+
 module.exports = router;
