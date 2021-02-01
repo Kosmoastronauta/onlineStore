@@ -5,10 +5,11 @@ const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
 const Cart = require('../model/Cart');
-const User = require('../model/User')
+const Role = require('../config/role');
 const {ensureAuthenticated} = require('../config/auth');
+const {ensureAdminAuthenticated} = require('../config/auth');
 
-router.get('/',  async (req, res) => {
+router.get('/', async (req, res) => {
     let products;
     try {
         products = await Product.find();
@@ -16,7 +17,7 @@ router.get('/',  async (req, res) => {
         products = [];
     }
     res.render('homePage', {products: products});
-    });
+});
 
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
     let products;
@@ -26,18 +27,18 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
         products = [];
     }
     console.log(req.user.username);
-    res.render('dashboard', {products});
+    if (req.user.role === Role.Admin)
+        res.render('adminDashboard', {products: products});
+    else
+        res.render('dashboard', {products: products});
 });
 
-router.get('/adminDashboard', ensureAuthenticated, async (req, res) => {
+router.get('/adminDashboard', ensureAdminAuthenticated, async (req, res) => {
     let products;
-    let users;
     try {
         products = await Product.find();
-        users = await User.find();
     } catch (error) {
         products = [];
-        users = [];
     }
     res.render('adminDashboard', {products});
 });
@@ -86,7 +87,6 @@ router.get('/contact', ensureAuthenticated, async (req, res) => res.render('cont
 router.get('/add-to-cart/:productId', ensureAuthenticated, async (req, res) => {
     let cart;
     try {
-        console.log("SESSION: ", req.session);
         const addedProduct = await Product.findById(req.params.productId);
         cart = new Cart(req.session.cart ? req.session.cart : {});
         cart.addProduct(addedProduct);
@@ -115,7 +115,7 @@ async function removeProductById(id) {
         await Product.deleteOne({_id: id});
         console.log("removed product with id: " + id);
     } catch (error) {
-        console.log("Could not remove product with id: "+id);
+        console.log("Could not remove product with id: " + id);
     }
 }
 
