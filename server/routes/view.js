@@ -17,6 +17,7 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
     } catch (error) {
         products = [];
     }
+    console.log(req.user.username);
     res.render('dashboard', {products});
 });
 

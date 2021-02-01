@@ -8,8 +8,7 @@ const User = require('../model/User');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
-const Cart = require('../model/Cart');
-
+const Role = require('../config/role');
 /**
  * Endpoint responsible for returning page for signing in.
  *
@@ -53,7 +52,8 @@ router.post('/register', urlencodedParser, async (req, res) => {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        role: Role.User
     });
 
     let errors = await getValidationErrors(user);

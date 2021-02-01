@@ -15,9 +15,8 @@ const flash = require('connect-flash');
 require('dotenv/config');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-// app.use(cookieParser);
 app.use(bodyparser.json()); // Enabling parsing json model
-app.use(bodyparser.urlencoded({extended: false}));
+app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
 // app.use(cookieParser())
@@ -47,10 +46,6 @@ app.get('/session', (req,res)=>{
 })
 
 
-// app.use(function (req, res, next){
-//     res.locals.session = req.session;
-//     next();
-// });
 // Importing routes/controllers.
 /**
  * Router for requests with /products prefix.
