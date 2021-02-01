@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
 const {ensureAuthenticated} = require('../config/auth');
+const {ensureAdminAuthenticated} = require('../config/auth');
 
 /**
  * Endpoint responsible for getting all products in the system.
@@ -59,14 +60,16 @@ router.post('/', ensureAuthenticated, async (req, res) => {
  * @param productId - id of the product that should be deleted.
  * @see Product
  */
-router.delete('/:productId', ensureAuthenticated, async (req, res) => {
+router.get('/deleteProduct/:productId', ensureAdminAuthenticated, async (req, res) => {
     try {
-        const removedProduct = await Product.deleteOne({_id: req.params.productId});
-        res.json(removedProduct).status(202);
+        await Product.deleteOne({_id: req.params.productId});
+        console.log("Removed product with id: " + req.params.productId);
+        res.redirect('/adminFindProduct');
     } catch (error) {
         res.json({message: error}).status(400);
     }
 });
+
 /**
  * Endpoint responsible for updating product, specified by id.
  * PATCH at: /products/{productsId}
@@ -74,9 +77,10 @@ router.delete('/:productId', ensureAuthenticated, async (req, res) => {
  * @param body - product sent in the body of http request which data will override product with productId in the system.
  * @see Product
  */
-router.patch('/:productId', ensureAuthenticated, async (req, res) => {
+router.post('/edit/:productId', ensureAuthenticated, async (req, res) => {
+
     try {
-        const updatedProduct = await Product.updateOne({_id: req.params.productId},
+        const updatedProduct = await Product.findOneAndUpdate({_id: req.params.productId},
             {
                 $set:
                     {
@@ -84,13 +88,23 @@ router.patch('/:productId', ensureAuthenticated, async (req, res) => {
                         description: req.body.description,
                         category: req.body.category,
                         price: req.body.price,
-                        data: req.body.date
+                        data: Date.now()
                     }
-            });
-        res.json(updatedProduct).status(200);
+            })
     } catch (error) {
-        res.json({message: error}).status(404);
+        console.log(error);
     }
+    res.render('adminFindProduct', {products: await getAllProducts()});
 });
+
+function getAllProducts() {
+    let products;
+    try {
+        products = Product.find(); // get all products, there is  option "limit" after limit() ex. Product.find().limit(10)
+    } catch (error) {
+        products = [];
+    }
+    return products;
+}
 
 module.exports = router;

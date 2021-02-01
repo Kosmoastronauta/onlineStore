@@ -19,9 +19,9 @@ app.use(bodyparser.json()); // Enabling parsing json model
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
-// app.use(cookieParser())
 app.set('view engine', 'ejs');
-
+// app.use(cookieParser())
+mongoose.set('useFindAndModify', false);
 require('./config/passport')(passport);
 
 app.use(
