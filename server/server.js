@@ -13,11 +13,13 @@ const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
 require('dotenv/config');
-
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 app.use(bodyparser.json()); // Enabling parsing json model
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
+// app.use(cookieParser())
 app.set('view engine', 'ejs');
 
 require('./config/passport')(passport);
@@ -25,14 +27,25 @@ require('./config/passport')(passport);
 app.use(
     session({
         secret: 'secret',
-        resave: true,
-        saveUninitialized: true
+        resave: false,
+        saveUninitialized: false,
+        cookie: {secure: false}
     })
 );
-
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
+
+app.use(function(req, res, next) {
+    res.locals.session = req.session;
+    next();
+});
+
+app.get('/session', (req,res)=>{
+    console.log(req.session.sessionID);
+})
+
+
 // Importing routes/controllers.
 /**
  * Router for requests with /products prefix.
