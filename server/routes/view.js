@@ -15,7 +15,7 @@ router.get('/',  async (req, res) => {
     } catch (error) {
         products = [];
     }
-    res.render('homePage', {products});
+    res.render('homePage', {products: products});
     });
 
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
