@@ -5,10 +5,11 @@ const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
 const Cart = require('../model/Cart');
-const User = require('../model/User')
+const Role = require('../config/role');
 const {ensureAuthenticated} = require('../config/auth');
+const {ensureAdminAuthenticated} = require('../config/auth');
 
-router.get('/',  async (req, res) => {
+router.get('/', async (req, res) => {
     let products;
     try {
         products = await Product.find();
@@ -16,7 +17,7 @@ router.get('/',  async (req, res) => {
         products = [];
     }
     res.render('homePage', {products: products});
-    });
+});
 
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
     let products;
@@ -26,21 +27,36 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
         products = [];
     }
     console.log(req.user.username);
-    res.render('dashboard', {products});
+    if (req.user.role === Role.Admin)
+        res.render('adminDashboard', {products: products});
+    else
+        res.render('dashboard', {products: products});
 });
 
-router.get('/adminDashboard', ensureAuthenticated, async (req, res) => {
+router.get('/adminDashboard', ensureAdminAuthenticated, async (req, res) => {
     let products;
-    let users;
     try {
         products = await Product.find();
-        users = await User.find();
     } catch (error) {
         products = [];
-        users = [];
     }
     res.render('adminDashboard', {products});
 });
+
+router.get('/adminFindProduct', ensureAdminAuthenticated, async (req, res) => {
+    productName = req.query.productName;
+    let products = [];
+    try {
+        if (productName === '' || productName == null)
+            products = await Product.find();
+        else
+            products = await Product.find({name: productName});
+    } catch (error) {
+        console.log("There was problem during getting product by name");
+    }
+    // let cart = new Cart(req.session.cart ? req.session.cart : {});
+    res.render('adminFindProduct', {products: products});
+})
 
 router.get('/addProduct', ensureAuthenticated, async (req, res) =>
     res.render('addProduct'));
@@ -78,7 +94,7 @@ router.get('/findProduct', async (req, res) => {
         console.log("There was problem during getting product by name");
     }
     let cart = new Cart(req.session.cart ? req.session.cart : {});
-    res.render('findProduct', {products: products, cart: cart});
+    res.render('adminFindProduct', {products: products});
 })
 
 router.get('/contact', ensureAuthenticated, async (req, res) => res.render('contact'))
@@ -86,7 +102,6 @@ router.get('/contact', ensureAuthenticated, async (req, res) => res.render('cont
 router.get('/add-to-cart/:productId', ensureAuthenticated, async (req, res) => {
     let cart;
     try {
-        console.log("SESSION: ", req.session);
         const addedProduct = await Product.findById(req.params.productId);
         cart = new Cart(req.session.cart ? req.session.cart : {});
         cart.addProduct(addedProduct);
@@ -109,13 +124,23 @@ router.post('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
     cart.products.forEach(product => removeProductById(product._id));
 });
 
+router.get('/editProduct/:productId', ensureAdminAuthenticated, async (req, res) => {
+    let product;
+    try {
+        product = await Product.findById(req.params.productId);
+    } catch (error) {
+        res.json({message: error}).status(400);
+    }
+    res.render('adminEditProduct', {product: product});
+})
+
 async function removeProductById(id) {
     console.log(id);
     try {
         await Product.deleteOne({_id: id});
         console.log("removed product with id: " + id);
     } catch (error) {
-        console.log("Could not remove product with id: "+id);
+        console.log("Could not remove product with id: " + id);
     }
 }
 

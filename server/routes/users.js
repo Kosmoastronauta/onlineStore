@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport')
 const Role = require('../config/role');
 const {ensureAuthenticated} = require('../config/auth');
+const {ensureAdminAuthenticated} = require('../config/auth');
 /**
  * Endpoint responsible for returning page for signing in.
  *
@@ -129,7 +130,7 @@ function saveUser(user, res) {
  * GET at: /getUsers
  * @see User
  */
-router.get('/getUsers', ensureAuthenticated, async (req, res) => {
+router.get('/getUsers',ensureAdminAuthenticated , async (req, res) => {
     let users;
     try {
         users = await User.find(); // get all users, there is  option "limit" after limit() ex. User.find().limit(10)
