@@ -9,6 +9,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
 const Role = require('../config/role');
+const {ensureAuthenticated} = require('../config/auth');
 /**
  * Endpoint responsible for returning page for signing in.
  *
@@ -59,8 +60,10 @@ router.post('/register', urlencodedParser, async (req, res) => {
     let errors = await getValidationErrors(user);
 
     if (errors.length === 0) {
-        saveUser(user, res);
-    } else
+       saveUser(user, res);
+       res.redirect('/users/login');
+    }
+     else
         console.log(errors);
 });
 
@@ -120,5 +123,77 @@ function saveUser(user, res) {
         })
     }))
 }
+
+/**
+ * Endpoint responsible for getting all users in the system.
+ * GET at: /getUsers
+ * @see User
+ */
+router.get('/getUsers', ensureAuthenticated, async (req, res) => {
+    let users;
+    try {
+        users = await User.find(); // get all users, there is  option "limit" after limit() ex. User.find().limit(10)
+    } catch (error) {
+        users = [];
+    }
+    res.render('listOfUsers2', {users});
+});
+
+/**
+ * Endpoint responsible for creating new user to the system.
+ * POST at: /adduser
+ * @see User
+ */
+router.post('/', ensureAuthenticated, async (req, res) => {
+    const user = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    });
+    try {
+        const savedUser = await user.save();
+        res.json(savedUser).status(201);
+    } catch (error) {
+        res.json({message: error}).status(400);
+    }
+});
+
+/**
+ * Endpoint responsible for deleting user by id.
+ * DELETE at: /users/{userId}
+ * @param userId - id of the product that should be deleted.
+ * @see User
+ */
+router.delete('/:userId', ensureAuthenticated, async (req, res) => {
+    console.log(req.params.userId);
+    try {
+        const removedUser = await User.deleteOne({_id: req.params.userId});
+
+    } catch (error) {
+        console.log(error);
+    }
+    let users;
+    try {
+        users = await User.find(); // get all users, there is  option "limit" after limit() ex. User.find().limit(10)
+    } catch (error) {
+        users = [];
+    }
+    res.render('listOfUsers2', {users});
+});
+
+/**
+ * Endpoint responsible for getting all users in the system.
+ * GET at: /listOfUsers2
+ * @see User
+ */
+router.get('/userDetails/:userId', ensureAuthenticated, async (req, res) => {
+    let user;
+    try {
+        user = await User.findOne({_id: req.params.userId}); // get specific users, there is  option "limit" after limit() ex. User.find().limit(10)
+    } catch (error) {
+        user = [];
+    }
+    res.render('userDetails', {user});
+});
 
 module.exports = router;
