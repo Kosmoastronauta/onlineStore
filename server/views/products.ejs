@@ -5,9 +5,13 @@
 
 <div class="container mt-5">
     <div class="head">
+        <a href="/buyProductsWithCart">
         <button type="button" class="shopping-cart-button" data-toggle="shopping-cart-dropdown">
             <i class="fa fa-shopping-cart"></i>
             <span class="text">Go to Cart (0)</span>
+        </button>
+        </a>
+
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -30,10 +34,12 @@
                                     <a href="/buyProduct/<%=products[i].id%>" class="btn-gradient">Details</a>
                                 </div>
                                 <div>
+                                    <a href="/add-to-cart/<%= products[i].id %>">
                                     <button type="button" class="shopping-cart-button float-right" data-toggle="shopping-cart-dropdown">
                                         <i class="fa fa-shopping-cart"></i>
                                         <span class="text">Add to Cart</span>
                                       </button>
+                                    </a>
                                 </div>
                             </div>
                         </li>
