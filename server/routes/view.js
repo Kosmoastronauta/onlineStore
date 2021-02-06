@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
 const Cart = require('../model/Cart');
+const Order = require('../model/Order');
 const Role = require('../config/role');
 const {ensureAuthenticated} = require('../config/auth');
 const {ensureAdminAuthenticated} = require('../config/auth');
@@ -44,7 +45,7 @@ router.get('/adminDashboard', ensureAdminAuthenticated, async (req, res) => {
 });
 
 router.get('/adminFindProduct', ensureAdminAuthenticated, async (req, res) => {
-    productName = req.query.productName;
+    let productName = req.query.productName;
     let products = [];
     try {
         if (productName === '' || productName == null)
@@ -54,7 +55,6 @@ router.get('/adminFindProduct', ensureAdminAuthenticated, async (req, res) => {
     } catch (error) {
         console.log("There was problem during getting product by name");
     }
-    // let cart = new Cart(req.session.cart ? req.session.cart : {});
     res.render('adminFindProduct', {products: products});
 })
 
@@ -82,7 +82,7 @@ router.get('/boughtProduct/:productId', async (req, res) => {
 });
 
 
-router.get('/findProduct', async (req, res) => {
+router.get('/findProduct',ensureAdminAuthenticated, async (req, res) => {
     productName = req.query.productName;
     let products = [];
     try {
@@ -121,13 +121,20 @@ router.get('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
 
 router.post('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
     let cart = req.session.cart;
-    cart.products.forEach(product => removeProductById(product._id));
+    let productNames =[];
+    cart.products.forEach(product => productNames.push(product.name));
+    let productsIds =[];
+    cart.products.forEach(product => productsIds.push(product._id));
+    let order = await new Order({userEmail: req.user.email, productNames: productNames, productsIds: productsIds, totalPrice: cart.totalPrice});
+    order.save();
 });
+
 
 router.get('/editProduct/:productId', ensureAdminAuthenticated, async (req, res) => {
     let product;
     try {
         product = await Product.findById(req.params.productId);
+        order.isFinished
     } catch (error) {
         res.json({message: error}).status(400);
     }
