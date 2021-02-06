@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router();
 const Product = require('../model/Product');
 const Cart = require('../model/Cart');
+const Order = require('../model/Order');
 const Role = require('../config/role');
 const {ensureAuthenticated} = require('../config/auth');
 const {ensureAdminAuthenticated} = require('../config/auth');
@@ -121,13 +122,21 @@ router.get('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
 
 router.post('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
     let cart = req.session.cart;
-    cart.products.forEach(product => removeProductById(product._id));
+    let productNames =[];
+    cart.products.forEach(product => productNames.push(product.name));
+    let productsIds =[];
+    cart.products.forEach(product => productsIds.push(product._id));
+    let order = await new Order({userEmail: req.user.email, productNames: productNames, productsIds: productsIds, totalPrice: cart.totalPrice});
+    order.save();
+    res.render('showOrders', {orders})
 });
+
 
 router.get('/editProduct/:productId', ensureAdminAuthenticated, async (req, res) => {
     let product;
     try {
         product = await Product.findById(req.params.productId);
+        order.isFinished
     } catch (error) {
         res.json({message: error}).status(400);
     }
