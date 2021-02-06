@@ -45,7 +45,7 @@ router.get('/adminDashboard', ensureAdminAuthenticated, async (req, res) => {
 });
 
 router.get('/adminFindProduct', ensureAdminAuthenticated, async (req, res) => {
-    productName = req.query.productName;
+    let productName = req.query.productName;
     let products = [];
     try {
         if (productName === '' || productName == null)
@@ -55,7 +55,6 @@ router.get('/adminFindProduct', ensureAdminAuthenticated, async (req, res) => {
     } catch (error) {
         console.log("There was problem during getting product by name");
     }
-    // let cart = new Cart(req.session.cart ? req.session.cart : {});
     res.render('adminFindProduct', {products: products});
 })
 
@@ -128,7 +127,6 @@ router.post('/buyProductsWithCart', ensureAuthenticated, async (req, res) => {
     cart.products.forEach(product => productsIds.push(product._id));
     let order = await new Order({userEmail: req.user.email, productNames: productNames, productsIds: productsIds, totalPrice: cart.totalPrice});
     order.save();
-    res.render('showOrders', {orders})
 });
 
 
