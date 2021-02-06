@@ -146,13 +146,15 @@ router.get('/getOrdersInProgress',ensureAdminAuthenticated , async (req, res) =>
     try {
         orders = await Order.find(); 
         // get all orders
-
-        for (var i = 0; i < orders.length; i++)
+        for (var i = 0; i < orders.length; i++) {
+            orders[i].finished = false;
+            console.log(orders[i]);
             if (orders[i].finished == false) {
                 console.log(orders[i].userEmail); 
-                console.log(orders[i].productName);
+                console.log(orders[i].productNames);
                 console.log(orders[i].totalPrice);
             }
+        }
     } catch (error) {
         orders = [];
     }
@@ -169,5 +171,16 @@ async function removeProductById(id) {
         console.log("Could not remove product with id: " + id);
     }
 }
+
+router.get('/getOrdersInProgress/:orderId', ensureAuthenticated, async (req, res) => {
+    let order;
+    try {
+        order = await Order.findOne({_id: req.params.orderId}); // get specific orders, there is  option "limit" after limit() ex. User.find().limit(10)
+        order.finished = true;
+    } catch (error) {
+        order = [];
+    }
+    res.render('adminDashboard');
+});
 
 module.exports = router;
