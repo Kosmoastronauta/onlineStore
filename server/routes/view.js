@@ -81,7 +81,6 @@ router.get('/boughtProduct/:productId', async (req, res) => {
     console.log("You bought ", product.name, "!");
 });
 
-
 router.get('/findProduct',ensureAdminAuthenticated, async (req, res) => {
     productName = req.query.productName;
     let products = [];
@@ -140,6 +139,18 @@ router.get('/editProduct/:productId', ensureAdminAuthenticated, async (req, res)
     }
     res.render('adminEditProduct', {product: product});
 })
+
+router.get('/getOrdersInProgress',ensureAdminAuthenticated , async (req, res) => {
+    let orders;
+    try {
+        orders = await Orders.find(isFinished = false); 
+        // get all orders
+    } catch (error) {
+        orders = [];
+    }
+    res.render('ordersInProgress', {orders});
+});
+
 
 async function removeProductById(id) {
     console.log(id);
