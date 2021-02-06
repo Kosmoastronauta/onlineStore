@@ -142,9 +142,17 @@ router.get('/editProduct/:productId', ensureAdminAuthenticated, async (req, res)
 
 router.get('/getOrdersInProgress',ensureAdminAuthenticated , async (req, res) => {
     let orders;
+    
     try {
-        orders = await Orders.find(isFinished = false); 
+        orders = await Order.find(); 
         // get all orders
+
+        for (var i = 0; i < orders.length; i++)
+            if (orders[i].finished == false) {
+                console.log(orders[i].userEmail); 
+                console.log(orders[i].productName);
+                console.log(orders[i].totalPrice);
+            }
     } catch (error) {
         orders = [];
     }

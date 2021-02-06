@@ -1,8 +1,21 @@
-<head>
-    <link href="/css/list.css" rel="stylesheet" >
-    <link href="/css/button.css" rel="stylesheet" >
-</head>
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Email</th>
+        <th scope="col">Product name</th>
+        <th scope="col">Price</th>    
+    </tr>
+    </thead>
 
-<div class="container mt-5">
-    <p>HELLO KAROL!</p>
-</div>
+    <thead class="thead-light">
+    <% for (var i = 0; i < orders.length; i++) { %>
+        <tr>
+            <td><%= orders[i].userEmail %></td>
+            <td><%= orders[i].productName%></td>
+            <td><%= orders[i].totalPrice%></td>
+            
+            <td><button>REALIZE</button></a></td>
+        </tr>
+    <% } %>
+    </thead>
+</table>
