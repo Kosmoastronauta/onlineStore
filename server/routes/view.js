@@ -82,7 +82,7 @@ router.get('/boughtProduct/:productId', async (req, res) => {
 });
 
 
-router.get('/findProduct', async (req, res) => {
+router.get('/findProduct',ensureAdminAuthenticated, async (req, res) => {
     productName = req.query.productName;
     let products = [];
     try {
