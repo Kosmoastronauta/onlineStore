@@ -12,7 +12,7 @@ const {ensureAdminAuthenticated} = require('../config/auth');
  * GET at: /products
  * @see Product
  */
-router.get('/', ensureAuthenticated, async (req, res) => {
+router.get('/', async (req, res) => {
     let products;
     try {
         products = await Product.find(); // get all products, there is  option "limit" after limit() ex. Product.find().limit(10)
