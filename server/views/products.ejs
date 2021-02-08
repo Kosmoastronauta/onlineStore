@@ -3,6 +3,21 @@
     <link href="/css/button.css" rel="stylesheet" >
 </head>
 
+<form method='GET' action="/findProduct">
+    <div class="container">
+        <div class="prompt left-pane">
+            <span>Search Product by name </span>
+        </div>
+
+        <div class="right-pane">
+            <input type="text" id="productName" name="productName"/>
+        </div>
+    </div>
+    <div class="submit-name">
+        <input type="submit" value="Find"/>
+    </div>
+</form>
+
 <div class="container mt-5">
     <div class="head">
         <a href="/buyProductsWithCart">

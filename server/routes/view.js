@@ -72,7 +72,7 @@ router.get('/buyProduct/:productId', async (req, res) => {
 })
 
 
-router.get('/findProduct',ensureAdminAuthenticated, async (req, res) => {
+router.get('/findProduct', async (req, res) => {
     productName = req.query.productName;
     let products = [];
     try {
@@ -84,7 +84,7 @@ router.get('/findProduct',ensureAdminAuthenticated, async (req, res) => {
         console.log("There was problem during getting product by name");
     }
     let cart = new Cart(req.session.cart ? req.session.cart : {});
-    res.render('adminFindProduct', {products: products});
+    res.render('findProduct', {products: products});
 })
 
 router.get('/contact', ensureAuthenticated, async (req, res) => res.render('contact'))
