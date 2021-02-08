@@ -9,13 +9,15 @@
 
     <thead class="thead-light">
     <% for (var i = 0; i < orders.length; i++) { %>
+        <% if(orders[i].finished === false){%>
         <tr>
             <td><%= orders[i].userEmail %></td>
             <td><%= orders[i].productNames%></td>
             <td><%= orders[i].totalPrice%></td>
             
-            <td><a href="/getOrdersInProgress/<%=orders[i].id%>"></a><button>REALIZE</button></a></td>
+            <td><a href="/getOrdersInProgress/<%=orders[i].id%>"><button>REALIZE</button></a></td>
         </tr>
+        <%}%>
     <% } %>
     </thead>
 </table>
