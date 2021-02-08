@@ -136,20 +136,23 @@ router.get('/getOrdersInProgress',ensureAdminAuthenticated , async (req, res) =>
     
     try {
         orders = await Order.find(); 
-        // get all orders
-        for (var i = 0; i < orders.length; i++) {
-            orders[i].finished = false;
-            console.log(orders[i]);
-            if (orders[i].finished == false) {
-                console.log(orders[i].userEmail); 
-                console.log(orders[i].productNames);
-                console.log(orders[i].totalPrice);
-            }
-        }
+
     } catch (error) {
         orders = [];
     }
     res.render('ordersInProgress', {orders});
+});
+
+router.get('/getRealizedOrders',ensureAdminAuthenticated , async (req, res) => {
+    let orders;
+
+    try {
+        orders = await Order.find();
+        // get all orders
+    } catch (error) {
+        orders = [];
+    }
+    res.render('realizedOrders', {orders});
 });
 
 
@@ -168,10 +171,18 @@ router.get('/getOrdersInProgress/:orderId', ensureAuthenticated, async (req, res
     try {
         order = await Order.findOne({_id: req.params.orderId}); // get specific orders, there is  option "limit" after limit() ex. User.find().limit(10)
         order.finished = true;
+        order.save();
     } catch (error) {
         order = [];
     }
-    res.render('adminDashboard');
+    let products;
+    try {
+        products = await Product.find();
+    } catch (error) {
+        products = [];
+    }
+
+    res.render('adminDashboard', {products: products});
 });
 
 module.exports = router;
